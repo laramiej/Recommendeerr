@@ -29,6 +29,7 @@ import issueCommentRoutes from './issueComment';
 import mediaRoutes from './media';
 import movieRoutes from './movie';
 import personRoutes from './person';
+import pickerRoutes from './picker';
 import requestRoutes from './request';
 import searchRoutes from './search';
 import serviceRoutes from './service';
@@ -151,6 +152,7 @@ router.use('/service', isAuthenticated(), serviceRoutes);
 router.use('/issue', isAuthenticated(), issueRoutes);
 router.use('/issueComment', isAuthenticated(), issueCommentRoutes);
 router.use('/auth', authRoutes);
+router.use('/picker', isAuthenticated(), pickerRoutes);
 
 router.get('/regions', isAuthenticated(), async (req, res, next) => {
   const tmdb = new TheMovieDb();

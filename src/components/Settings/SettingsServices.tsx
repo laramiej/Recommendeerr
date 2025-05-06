@@ -41,6 +41,12 @@ const messages = defineMessages({
   mediaTypeMovie: 'movie',
   mediaTypeSeries: 'series',
   deleteServer: 'Delete {serverType} Server',
+  openaisettings: 'OpenAI Settings',
+  openaiDescription: 'Configure your OpenAI API key to enable AI-powered movie recommendations in the Movie Picker.',
+  apiKey: 'API Key',
+  apiKeyDescription: 'Enter your OpenAI API key to enable AI-powered movie recommendations.',
+  getKeyLink: 'You can get a key at',
+  settingsSaved: 'Settings saved successfully!',
 });
 
 interface ServerInstanceProps {
@@ -448,7 +454,110 @@ const SettingsServices = () => {
           </>
         )}
       </div>
+
+      {/* OpenAI Settings Section */}
+      <div className="mb-6 mt-10">
+        <h3 className="heading">
+          {intl.formatMessage(messages.openaisettings)}
+        </h3>
+        <p className="description">
+          {intl.formatMessage(messages.openaiDescription)}
+        </p>
+        <OpenAISettings />
+      </div>
     </>
+  );
+};
+
+// Add OpenAI settings component
+const OpenAISettings = () => {
+  const intl = useIntl();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [apiKey, setApiKey] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
+
+  const saveSettings = async () => {
+    setIsSaving(true);
+    setError(null);
+
+    try {
+      await axios.post('/api/v1/settings/openai', {
+        apiKey,
+      });
+      setIsSaved(true);
+      setTimeout(() => {
+        setIsSaved(false);
+      }, 3000);
+    } catch (e) {
+      setError(e.response?.data?.error || 'Something went wrong saving the OpenAI settings.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <div className="section">
+      <div className="form-row">
+        <label htmlFor="apiKey" className="text-label">
+          {intl.formatMessage(messages.apiKey)}
+        </label>
+        <div className="form-input-area">
+          <div className="flex max-w-lg rounded-md shadow-sm">
+            <input
+              id="apiKey"
+              name="apiKey"
+              type="password"
+              value={apiKey}
+              onChange={(e) => {
+                setApiKey(e.target.value);
+                setIsSaved(false);
+              }}
+              className="flex-1 rounded-md bg-gray-800 text-white transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+            />
+          </div>
+          <div className="mt-2 flex items-center">
+            <span className="text-xs text-gray-400">
+              {intl.formatMessage(messages.apiKeyDescription)}
+              <br />
+              {intl.formatMessage(messages.getKeyLink)}{' '}
+              <a
+                href="https://platform.openai.com/api-keys"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-500 transition duration-300 hover:underline"
+              >
+                https://platform.openai.com/api-keys
+              </a>
+            </span>
+          </div>
+          {error && (
+            <div className="mt-2 text-red-500">
+              {error}
+            </div>
+          )}
+          {isSaved && (
+            <div className="mt-2 text-green-500">
+              {intl.formatMessage(messages.settingsSaved)}
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="actions">
+        <div className="flex justify-end">
+          <span className="ml-3 inline-flex rounded-md shadow-sm">
+            <Button
+              buttonType="primary"
+              disabled={!apiKey || isSaving}
+              onClick={() => saveSettings()}
+            >
+              {isSaving ? <LoadingSpinner /> : intl.formatMessage(globalMessages.save)}
+            </Button>
+          </span>
+        </div>
+      </div>
+    </div>
   );
 };
 

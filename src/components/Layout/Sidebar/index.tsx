@@ -22,6 +22,7 @@ export const menuMessages = defineMessages({
   dashboard: 'Discover',
   browsemovies: 'Movies',
   browsetv: 'Series',
+  moviepicker: 'Movie Picker',
   requests: 'Requests',
   issues: 'Issues',
   users: 'Users',
@@ -60,6 +61,13 @@ const SidebarLinks: SidebarLinkProps[] = [
     messagesKey: 'browsemovies',
     svgIcon: <FilmIcon className="mr-3 h-6 w-6" />,
     activeRegExp: /^\/discover\/movies$/,
+  },
+  {
+    href: '/movie-picker',
+    messagesKey: 'moviepicker',
+    svgIcon: <FilmIcon className="mr-3 h-6 w-6" />,
+    activeRegExp: /^\/movie-picker/,
+    requiredPermission: Permission.REQUEST,
   },
   {
     href: '/discover/tv',

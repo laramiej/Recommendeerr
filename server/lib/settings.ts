@@ -256,6 +256,10 @@ export type JobId =
   | 'image-cache-cleanup'
   | 'availability-sync';
 
+export interface OpenAISettings {
+  apiKey?: string;
+}
+
 interface AllSettings {
   clientId: string;
   vapidPublic: string;
@@ -268,6 +272,7 @@ interface AllSettings {
   public: PublicSettings;
   notifications: NotificationSettings;
   jobs: Record<JobId, JobSettings>;
+  openai?: OpenAISettings;
 }
 
 const SETTINGS_PATH = process.env.CONFIG_DIRECTORY
@@ -529,6 +534,14 @@ class Settings {
 
   set jobs(data: Record<JobId, JobSettings>) {
     this.data.jobs = data;
+  }
+
+  get openai(): OpenAISettings | undefined {
+    return this.data.openai;
+  }
+
+  set openai(data: OpenAISettings | undefined) {
+    this.data.openai = data;
   }
 
   get clientId(): string {

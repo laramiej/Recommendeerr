@@ -620,4 +620,20 @@ settingsRoutes.get('/about', async (req, res) => {
   } as SettingsAboutResponse);
 });
 
+settingsRoutes.post('/openai', async (req, res) => {
+  const settings = getSettings();
+
+  if (!req.body.apiKey) {
+    return res.status(400).json({ error: 'An API key must be provided.' });
+  }
+
+  settings.openai = {
+    apiKey: req.body.apiKey,
+  };
+
+  settings.save();
+
+  return res.status(200).json({ status: 'ok' });
+});
+
 export default settingsRoutes;
